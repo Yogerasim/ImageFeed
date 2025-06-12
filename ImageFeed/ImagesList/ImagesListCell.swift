@@ -5,9 +5,10 @@ final class ImagesListCell: UITableViewCell {
     
     static let reuseIdentifier = "ImagesListCell"
     
-    @IBOutlet weak var cellImageView: UIImageView!
-    @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet private weak var cellImageView: UIImageView!
+    @IBOutlet private weak var dateLabel: UILabel!
+    @IBOutlet private weak var likeButton: UIButton!
+
     
     func setLiked(_ isLiked: Bool) {
         let imageName = isLiked ? "like_button_on" : "like_button_off"
@@ -19,6 +20,13 @@ final class ImagesListCell: UITableViewCell {
         cellImageView.layer.cornerRadius = 10
         cellImageView.clipsToBounds = true
     }
+    
+    func configure(with image: UIImage?, dateText: String, isLiked: Bool) {
+        cellImageView.image = image
+        dateLabel.text = dateText
+        setLiked(isLiked)
+    }
+
     
 
 }

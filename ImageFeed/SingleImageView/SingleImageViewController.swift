@@ -28,8 +28,8 @@ final class SingleImageViewController: UIViewController {
     @IBAction private func didTapBackButton() {
         dismiss(animated: true, completion: nil)
     }
-    
-    @IBAction func didTapShareButton(_ sender: UIButton) {
+
+    @IBAction private func didTapShareButton(_ sender: UIButton) {
         guard let image else { return }
         let share = UIActivityViewController(
             activityItems: [image],
@@ -37,7 +37,12 @@ final class SingleImageViewController: UIViewController {
         )
         present(share, animated: true, completion: nil)
     }
-    private func centerImage() {
+}
+
+// MARK: - Private methods
+
+private extension SingleImageViewController {
+    func centerImage() {
         let scrollViewSize = scrollView.bounds.size
         let imageViewSize = imageView.frame.size
 
@@ -51,18 +56,27 @@ final class SingleImageViewController: UIViewController {
             right: horizontalInset
         )
     }
-    
-    private func rescaleAndCenterImageInScrollView(image: UIImage) {
+
+    func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
         view.layoutIfNeeded()
+
         let visibleRectSize = scrollView.bounds.size
         let imageSize = image.size
+
+        guard imageSize.width != 0, imageSize.height != 0 else {
+            assertionFailure("Image has zero width or height.")
+            return
+        }
+
         let hScale = visibleRectSize.width / imageSize.width
         let vScale = visibleRectSize.height / imageSize.height
         let scale = min(maxZoomScale, max(minZoomScale, min(hScale, vScale)))
+
         scrollView.setZoomScale(scale, animated: false)
         scrollView.layoutIfNeeded()
+
         let newContentSize = scrollView.contentSize
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
@@ -71,10 +85,13 @@ final class SingleImageViewController: UIViewController {
     }
 }
 
+// MARK: - UIScrollViewDelegate
+
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
     }
+
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         centerImage()
     }

@@ -14,7 +14,6 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureView()
         setupUI()
     }
 }
@@ -22,10 +21,6 @@ final class ProfileViewController: UIViewController {
 // MARK: - UI Setup
 
 private extension ProfileViewController {
-    
-    func configureView() {
-        view.backgroundColor = UIColor(hex: "#1A1B22")
-    }
     
     func setupUI() {
         setupAvatarImageView()
@@ -46,7 +41,7 @@ private extension ProfileViewController {
         view.addSubview(avatarImageView)
         
         NSLayoutConstraint.activate([
-            avatarImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            avatarImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             avatarImageView.widthAnchor.constraint(equalToConstant: 70),
             avatarImageView.heightAnchor.constraint(equalToConstant: 70)
@@ -54,36 +49,36 @@ private extension ProfileViewController {
     }
     
     // MARK: - Labels
-    
+
     func setupNameLabel() {
         nameLabel.text = "Екатерина Новикова"
-        nameLabel.font = UIFont.boldSystemFont(ofSize: 24)
+        nameLabel.font = UIFont.boldSystemFont(ofSize: 23)
         nameLabel.textColor = .white
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)
         
         NSLayoutConstraint.activate([
-            nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
-            nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 16)
+            nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor, constant: -4),
+            nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 8)
         ])
     }
-    
+
     func setupLoginNameLabel() {
         loginNameLabel.text = "@ekaterina_nov"
-        loginNameLabel.font = UIFont.systemFont(ofSize: 16)
+        loginNameLabel.font = UIFont.systemFont(ofSize: 13)
         loginNameLabel.textColor = .gray
         loginNameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(loginNameLabel)
         
         NSLayoutConstraint.activate([
             loginNameLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            loginNameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 4)
+            loginNameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8)
         ])
     }
-    
+
     func setupDescriptionLabel() {
         descriptionLabel.text = "Hello, world!"
-        descriptionLabel.font = UIFont.systemFont(ofSize: 14)
+        descriptionLabel.font = UIFont.systemFont(ofSize: 13)
         descriptionLabel.textColor = .white
         descriptionLabel.numberOfLines = 0
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -91,11 +86,11 @@ private extension ProfileViewController {
         
         NSLayoutConstraint.activate([
             descriptionLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 12)
+            descriptionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8)
         ])
     }
-    
+
     // MARK: - Logout Button
     
     func setupLogoutButton() {
@@ -119,21 +114,4 @@ private extension ProfileViewController {
     }
 }
 
-// MARK: - UIColor Extension
-
-extension UIColor {
-    convenience init(hex: String) {
-        var hex = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        hex = hex.replacingOccurrences(of: "#", with: "")
-
-        var rgb: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&rgb)
-
-        let r = CGFloat((rgb >> 16) & 0xFF) / 255.0
-        let g = CGFloat((rgb >> 8) & 0xFF) / 255.0
-        let b = CGFloat(rgb & 0xFF) / 255.0
-
-        self.init(red: r, green: g, blue: b, alpha: 1)
-    }
-}
 

@@ -60,18 +60,16 @@ extension ImagesListViewController: UITableViewDataSource {
 
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let image = UIImage(named: photoNames[indexPath.row]) else { return }
-
-        cell.cellImageView.image = image
-        cell.dateLabel.text = dateFormatter.string(from: Date())
-
+        let image = UIImage(named: photoNames[indexPath.row])
+        let dateText = dateFormatter.string(from: Date())
         let isLiked = indexPath.row % 2 == 0
-        let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
-        cell.likeButton.setImage(likeImage, for: .normal)
+
+        cell.configure(with: image, dateText: dateText, isLiked: isLiked)
     }
 }
 
 extension ImagesListViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
@@ -81,6 +79,12 @@ extension ImagesListViewController: UITableViewDelegate {
 
         let insets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
         let availableWidth = tableView.bounds.width - insets.left - insets.right
+
+        guard image.size.width != 0 else {
+            assertionFailure("Image width is zero, cannot calculate scale.")
+            return 0
+        }
+
         let scale = availableWidth / image.size.width
         let height = image.size.height * scale
 
