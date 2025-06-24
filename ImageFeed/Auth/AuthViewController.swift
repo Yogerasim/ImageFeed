@@ -13,9 +13,7 @@ final class AuthViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureBackButton()
-        
         navigationController?.navigationBar.tintColor = UIColor(named: "ypBlack") ?? .black
-        
     }
 
     // MARK: - Navigation
@@ -23,7 +21,7 @@ final class AuthViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == showWebViewSegueIdentifier {
             guard let webViewVC = segue.destination as? WebViewViewController else {
-                assertionFailure("Expected WebViewViewController for segue \(showWebViewSegueIdentifier)")
+                assertionFailure("[AuthVC] WebViewViewController не найден в segue")
                 return
             }
             webViewVC.delegate = self
@@ -31,17 +29,14 @@ final class AuthViewController: UIViewController {
             super.prepare(for: segue, sender: sender)
         }
     }
-    
 
     // MARK: - UI
 
     private func configureBackButton() {
-        let button = UIButton(type: .system)
         navigationController?.navigationBar.backIndicatorImage = UIImage(named: "nav_back_button")
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named: "nav_back_button")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIColor(named: "ypBlack")
-        button.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
     }
 }
 
@@ -57,20 +52,22 @@ extension AuthViewController: WebViewViewControllerDelegate {
                         let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                         let window = windowScene.windows.first
                     else {
-                        assertionFailure("Не удалось получить окно после авторизации")
+                        print("[AuthVC] Не удалось получить окно после авторизации")
+                        assertionFailure("Не удалось получить окно")
                         return
                     }
 
                     let storyboard = UIStoryboard(name: "Main", bundle: .main)
                     guard let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as? UITabBarController else {
-                        assertionFailure("Не найден MainTabBarController после авторизации")
+                        print("[AuthVC] MainTabBarController не найден в storyboard")
+                        assertionFailure("Не найден MainTabBarController")
                         return
                     }
 
                     window.rootViewController = tabBarController
 
                 case .failure(let error):
-                    print("Ошибка при получении токена: \(error)")
+                    print("[AuthVC] Ошибка получения токена: \(error.localizedDescription)")
                     let alert = UIAlertController(
                         title: "Ошибка",
                         message: "Не удалось войти. Попробуйте снова.",

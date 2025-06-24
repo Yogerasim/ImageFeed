@@ -1,14 +1,26 @@
 import UIKit
 import Foundation
 
+// MARK: - OAuth2Service
+
 final class OAuth2Service {
+
+    // MARK: - Singleton
+
     static let shared = OAuth2Service()
     private init() {}
 
+    // MARK: - Token Storage
+
     private let tokenStorage = OAuth2TokenStorage()
 
+    // MARK: - OAuth Request
+
     func makeOAuthTokenRequest(code: String) -> URLRequest? {
-        guard let baseURL = URL(string: "https://unsplash.com") else { return nil }
+        guard let baseURL = URL(string: "https://unsplash.com") else {
+            print("[OAuth2Service] Не удалось создать baseURL")
+            return nil
+        }
 
         var components = URLComponents()
         components.path = "/oauth/token"
@@ -20,15 +32,21 @@ final class OAuth2Service {
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
 
-        guard let url = components.url(relativeTo: baseURL) else { return nil }
+        guard let url = components.url(relativeTo: baseURL) else {
+            print("[OAuth2Service] Не удалось создать URL из URLComponents: \(components)")
+            return nil
+        }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         return request
     }
 
+    // MARK: - Token Fetching
+
     func fetchOAuthToken(code: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let request = makeOAuthTokenRequest(code: code) else {
+            print("[OAuth2Service] Ошибка: makeOAuthTokenRequest вернул nil")
             completion(.failure(NetworkError.urlSessionError))
             return
         }
@@ -37,21 +55,21 @@ final class OAuth2Service {
             switch result {
             case .success(let data):
                 do {
-                    let decoded = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
+                    let decoded = try JSONDecoder.snakeCaseDecoder.decode(OAuthTokenResponseBody.self, from: data)
                     let token = decoded.accessToken
                     self.tokenStorage.token = token
                     completion(.success(token))
                 } catch {
-                    print("Ошибка декодирования токена: \(error)")
+                    print("[OAuth2Service] Ошибка декодирования OAuthTokenResponseBody: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
 
             case .failure(let error):
-                print("Ошибка сети при получении токена: \(error)")
+                print("[OAuth2Service] Ошибка запроса токена: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
+
         task.resume()
     }
 }
-

@@ -1,11 +1,14 @@
 import UIKit
-import WebKit
+
+// MARK: - NetworkError
 
 enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
     case urlSessionError
 }
+
+// MARK: - URLSession Extension
 
 extension URLSession {
     func data(
@@ -17,20 +20,25 @@ extension URLSession {
                 completion(result)
             }
         }
-        
-        let task = dataTask(with: request, completionHandler: { data, response, error in
-            if let data = data, let responce = response, let statusCode = (responce as? HTTPURLResponse)?.statusCode {
-                if 200 ..< 300 ~= statusCode {
+
+        let task = dataTask(with: request) { data, response, error in
+            if let data = data, let response = response as? HTTPURLResponse {
+                let statusCode = response.statusCode
+                if 200..<300 ~= statusCode {
                     fulfillCompletionOnTheMainThread(.success(data))
                 } else {
+                    print("[URLSession] HTTP ошибка: статус-код = \(statusCode)")
                     fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
                 }
             } else if let error = error {
+                print("[URLSession] Ошибка запроса: \(error.localizedDescription)")
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
             } else {
+                print("[URLSession] Неизвестная ошибка сессии")
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
             }
-        })
+        }
+
         return task
     }
 }

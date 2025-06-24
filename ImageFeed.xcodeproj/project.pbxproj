@@ -10,6 +10,7 @@
 		A718ABB92E09476F00624CFF /* URLSession+data.swift in Sources */ = {isa = PBXBuildFile; fileRef = A718ABB82E09476000624CFF /* URLSession+data.swift */; };
 		A718ABBB2E09D54D00624CFF /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A718ABBA2E09D54500624CFF /* SplashViewController.swift */; };
 		A718ABC52E09F27C00624CFF /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A718ABC42E09F27900624CFF /* OAuth2TokenStorage.swift */; };
+		A718ABCA2E0AB3E000624CFF /* JSONDecoder+SnakeCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = A718ABC92E0AB3D300624CFF /* JSONDecoder+SnakeCase.swift */; };
 		A71A8BA42DFC3402000B3F2E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71A8BA32DFC33FD000B3F2E /* Constants.swift */; };
 		A7260A2D2DDA1AEE00389349 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7260A2C2DDA1AEE00389349 /* AppDelegate.swift */; };
 		A7260A2F2DDA1AEE00389349 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7260A2E2DDA1AEE00389349 /* SceneDelegate.swift */; };
@@ -30,6 +31,7 @@
 		A718ABB82E09476000624CFF /* URLSession+data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+data.swift"; sourceTree = "<group>"; };
 		A718ABBA2E09D54500624CFF /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		A718ABC42E09F27900624CFF /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
+		A718ABC92E0AB3D300624CFF /* JSONDecoder+SnakeCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JSONDecoder+SnakeCase.swift"; sourceTree = "<group>"; };
 		A71A8BA32DFC33FD000B3F2E /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		A7260A292DDA1AEE00389349 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7260A2C2DDA1AEE00389349 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -77,6 +79,22 @@
 			path = SplashViewController;
 			sourceTree = "<group>";
 		};
+		A718ABC72E0AB36800624CFF /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				A718ABC92E0AB3D300624CFF /* JSONDecoder+SnakeCase.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		A718ABC82E0AB3BF00624CFF /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A71A8BA32DFC33FD000B3F2E /* Constants.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
 		A7260A202DDA1AEE00389349 = {
 			isa = PBXGroup;
 			children = (
@@ -97,7 +115,8 @@
 		A7260A2B2DDA1AEE00389349 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				A71A8BA32DFC33FD000B3F2E /* Constants.swift */,
+				A718ABC82E0AB3BF00624CFF /* Core */,
+				A718ABC72E0AB36800624CFF /* Utilities */,
 				A718ABC62E09F2DA00624CFF /* SplashViewController */,
 				A718ABC32E09F27200624CFF /* OAuth2 */,
 				A79319B32E016EE800656DE7 /* Auth */,
@@ -235,6 +254,7 @@
 				A7260A2D2DDA1AEE00389349 /* AppDelegate.swift in Sources */,
 				A79319B52E016EFD00656DE7 /* AuthViewController.swift in Sources */,
 				A71A8BA42DFC3402000B3F2E /* Constants.swift in Sources */,
+				A718ABCA2E0AB3E000624CFF /* JSONDecoder+SnakeCase.swift in Sources */,
 				A7C9E6022DED8E0E006B5573 /* SingleImageViewController.swift in Sources */,
 				A718ABB92E09476F00624CFF /* URLSession+data.swift in Sources */,
 				A79319B72E01A30D00656DE7 /* WebViewViewController.swift in Sources */,
