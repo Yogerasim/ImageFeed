@@ -1,8 +1,15 @@
 import UIKit
+import ProgressHUD
+
+protocol AuthViewControllerDelegate: AnyObject {
+    func didAuthenticate(_ vc: AuthViewController)
+}
 
 // MARK: - AuthViewController
 
 final class AuthViewController: UIViewController {
+    
+    weak var delegate: AuthViewControllerDelegate?
 
     // MARK: - Properties
 
@@ -44,8 +51,12 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
+        UIBlockingProgressHUD.show()
+        OAuth2Service.shared.fetchOAuthToken(code) { [weak self] result in
             DispatchQueue.main.async {
+                
+                UIBlockingProgressHUD.dismiss()
+                
                 switch result {
                 case .success:
                     guard
@@ -56,24 +67,25 @@ extension AuthViewController: WebViewViewControllerDelegate {
                         assertionFailure("Не удалось получить окно")
                         return
                     }
-
+                    
                     let storyboard = UIStoryboard(name: "Main", bundle: .main)
                     guard let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as? UITabBarController else {
                         print("[AuthVC] MainTabBarController не найден в storyboard")
                         assertionFailure("Не найден MainTabBarController")
                         return
                     }
-
+                    
                     window.rootViewController = tabBarController
-
+                    window.makeKeyAndVisible()
+                    
                 case .failure(let error):
                     print("[AuthVC] Ошибка получения токена: \(error.localizedDescription)")
                     let alert = UIAlertController(
-                        title: "Ошибка",
-                        message: "Не удалось войти. Попробуйте снова.",
+                        title: "Что-то пошло не так",
+                        message: "Не удалось войти в систему",
                         preferredStyle: .alert
                     )
-                    alert.addAction(UIAlertAction(title: "ОК", style: .default))
+                    alert.addAction(UIAlertAction(title: "Ок", style: .default))
                     self?.present(alert, animated: true)
                 }
             }

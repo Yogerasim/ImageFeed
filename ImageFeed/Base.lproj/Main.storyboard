@@ -12,7 +12,7 @@
         <!--ImageList-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagesListViewController" title="ImageList" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -96,26 +96,10 @@
             </objects>
             <point key="canvasLocation" x="-533" y="-836"/>
         </scene>
-        <!--Profile-->
-        <scene sceneID="5nq-xZ-Nok">
-            <objects>
-                <viewController id="sqT-GI-0f5" userLabel="Profile" customClass="ProfileViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Oog-gU-tJQ">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="sGc-bS-7hn"/>
-                        <color key="backgroundColor" red="0.108485885" green="0.1125674918" blue="0.15007537600000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="" image="ActiveProfile" id="4SL-SY-0hh"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="SN0-sE-Zme" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-533" y="281"/>
-        </scene>
         <!--Main Tab Bar Controller-->
         <scene sceneID="0K4-9o-jev">
             <objects>
-                <tabBarController storyboardIdentifier="MainTabBarController" id="g0Y-aC-0m0" customClass="MainTabBarController" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainTabBarController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="g0Y-aC-0m0" customClass="MainTabBarController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="8tb-Ct-DQ7">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -125,10 +109,6 @@
                             <color key="backgroundColor" red="0.108485885" green="0.1125674918" blue="0.15007537600000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </tabBarAppearance>
                     </tabBar>
-                    <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="QUU-Qw-1gs"/>
-                        <segue destination="sqT-GI-0f5" kind="relationship" relationship="viewControllers" id="j46-ld-5Cu"/>
-                    </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W1i-Pz-3IB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -137,8 +117,7 @@
         <!--Navigation Controller-->
         <scene sceneID="op1-7P-zmz">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Dq0-eq-YBx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HZx-yE-YsB" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="NavigationController" automaticallyAdjustsScrollViewInsets="NO" id="HZx-yE-YsB" customClass="NavigationController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" image="ActiveScroll" id="N3L-fC-Q6a"/>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="fHv-3x-HAT"/>
@@ -156,6 +135,7 @@
                         <segue destination="T9K-CH-oea" kind="relationship" relationship="rootViewController" id="XcQ-KN-uUe"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Dq0-eq-YBx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1768" y="1261"/>
         </scene>
@@ -288,7 +268,7 @@
         <!--Web View View Controller-->
         <scene sceneID="aPc-3J-lRL">
             <objects>
-                <viewController id="dDm-on-Bo1" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="dDm-on-Bo1" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="pLR-ns-nIE">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="838"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -335,7 +315,7 @@
         <!--Unsplash-->
         <scene sceneID="gDG-Yy-qCc">
             <objects>
-                <viewController storyboardIdentifier="SplashViewController" id="Bkl-Rq-QJb" customClass="SplashViewController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SplashViewController" id="Bkl-Rq-QJb" customClass="SplashViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KyY-MT-N8O">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -353,7 +333,7 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Unsplash" id="1ew-F9-h5a"/>
                     <connections>
-                        <segue destination="HZx-yE-YsB" kind="show" id="Xh3-MO-ggJ"/>
+                        <segue destination="HZx-yE-YsB" kind="presentation" id="Xh3-MO-ggJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BqO-eN-t5m" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -363,7 +343,6 @@
     </scenes>
     <resources>
         <image name="0" width="1600" height="1059"/>
-        <image name="ActiveProfile" width="75" height="49"/>
         <image name="ActiveScroll" width="75" height="49"/>
         <image name="Backward" width="24" height="24"/>
         <image name="Sharing" width="50" height="50"/>

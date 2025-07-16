@@ -1,10 +1,14 @@
 import Foundation
-import UIKit
+import SwiftKeychainWrapper
 
 // MARK: - OAuthTokenResponseBody
 
-struct OAuthTokenResponseBody: Decodable {
+struct OAuthTokenResponseBody: Codable {
     let accessToken: String
+
+    enum CodingKeys: String, CodingKey {
+        case accessToken = "access_token"
+    }
 }
 
 // MARK: - OAuth2TokenStorage
@@ -14,15 +18,23 @@ final class OAuth2TokenStorage {
 
     var token: String? {
         get {
-            let value = UserDefaults.standard.string(forKey: tokenKey)
-            if value == nil {
-                print("[OAuth2TokenStorage] Токен не найден в UserDefaults")
+            guard let token = KeychainWrapper.standard.string(forKey: tokenKey) else {
+                print("[OAuth2TokenStorage] ❌ Токен не найден в Keychain")
+                return nil
             }
-            return value
+
+            print("[OAuth2TokenStorage] ✅ Токен получен из Keychain")
+            return token
         }
         set {
-            UserDefaults.standard.setValue(newValue, forKey: tokenKey)
-            print("[OAuth2TokenStorage] Токен сохранён в UserDefaults")
+            guard let token = newValue else {
+                let success = KeychainWrapper.standard.removeObject(forKey: tokenKey)
+                print("[OAuth2TokenStorage] \(success ? "🗑 Удалён" : "❌ Не удалось удалить") токен из Keychain")
+                return
+            }
+
+            let success = KeychainWrapper.standard.set(token, forKey: tokenKey)
+            print("[OAuth2TokenStorage] \(success ? "✅" : "❌") Сохранение токена в Keychain")
         }
     }
 }
