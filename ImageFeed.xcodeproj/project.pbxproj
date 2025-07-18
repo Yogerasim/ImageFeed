@@ -38,6 +38,7 @@
 		A7FA4D672E2A28C300E7FDEB /* ProfileResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FA4D662E2A28B800E7FDEB /* ProfileResult.swift */; };
 		A7FA4D692E2A28E000E7FDEB /* ProfileImageURLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FA4D682E2A28D400E7FDEB /* ProfileImageURLs.swift */; };
 		A7FA4D6C2E2A34E000E7FDEB /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FA4D6B2E2A34D300E7FDEB /* ProfileViewModel.swift */; };
+		A7FA4D6F2E2A4BB800E7FDEB /* OAuthTokenResponseBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FA4D6E2E2A4BB600E7FDEB /* OAuthTokenResponseBody.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +72,7 @@
 		A7FA4D662E2A28B800E7FDEB /* ProfileResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileResult.swift; sourceTree = "<group>"; };
 		A7FA4D682E2A28D400E7FDEB /* ProfileImageURLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageURLs.swift; sourceTree = "<group>"; };
 		A7FA4D6B2E2A34D300E7FDEB /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		A7FA4D6E2E2A4BB600E7FDEB /* OAuthTokenResponseBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenResponseBody.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,8 +214,8 @@
 		A7FA4D652E2A283A00E7FDEB /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A7FA4D6D2E2A4BA200E7FDEB /* Network */,
 				A7FA4D6A2E2A2B1800E7FDEB /* Profile */,
-				A7FA4D612E2A253300E7FDEB /* HTTPMethod.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -226,6 +228,15 @@
 				A7FA4D5F2E2A214C00E7FDEB /* UserResult.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		A7FA4D6D2E2A4BA200E7FDEB /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				A7FA4D6E2E2A4BB600E7FDEB /* OAuthTokenResponseBody.swift */,
+				A7FA4D612E2A253300E7FDEB /* HTTPMethod.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -323,6 +334,7 @@
 				A7C9E6022DED8E0E006B5573 /* SingleImageViewController.swift in Sources */,
 				A7FA4D602E2A215A00E7FDEB /* UserResult.swift in Sources */,
 				A718ABB92E09476F00624CFF /* URLSession+data.swift in Sources */,
+				A7FA4D6F2E2A4BB800E7FDEB /* OAuthTokenResponseBody.swift in Sources */,
 				A79319B72E01A30D00656DE7 /* WebViewViewController.swift in Sources */,
 				A718ABC52E09F27C00624CFF /* OAuth2TokenStorage.swift in Sources */,
 				A76A1D692E06C8C000153096 /* OAuth2Service.swift in Sources */,

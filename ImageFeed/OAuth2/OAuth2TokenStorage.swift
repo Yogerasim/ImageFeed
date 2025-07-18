@@ -1,18 +1,6 @@
 import Foundation
 import SwiftKeychainWrapper
 
-// MARK: - OAuthTokenResponseBody
-
-struct OAuthTokenResponseBody: Codable {
-    let accessToken: String
-
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-    }
-}
-
-// MARK: - OAuth2TokenStorage
-
 final class OAuth2TokenStorage {
     static let shared = OAuth2TokenStorage()
     private init() {}
