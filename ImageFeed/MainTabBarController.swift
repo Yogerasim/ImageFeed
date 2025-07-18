@@ -1,33 +1,49 @@
 import UIKit
 
+// MARK: - MainTabBarController
+
 final class MainTabBarController: UITabBarController {
+
+    // MARK: - Lifecycle
+
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        configureViewControllers()
+    }
 
-        let storyboard = UIStoryboard(name: "Main", bundle: .main)
 
-        let imagesListViewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController")
+    // MARK: - Setup View Controllers
+
+    private func configureViewControllers() {
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: .main)
+
+        let imagesListViewController = mainStoryboard.instantiateViewController(withIdentifier: "ImagesListViewController")
         let profileViewController = ProfileViewController()
 
         imagesListViewController.tabBarItem = UITabBarItem(
             title: nil,
-            image: UIImage(named: TabBarIcons.inactiveScroll)?.withRenderingMode(.alwaysOriginal),
-            selectedImage: UIImage(named: TabBarIcons.activeScroll)?.withRenderingMode(.alwaysOriginal)
+            image: UIImage(named: TabBarIcons.inactiveScrollImageName)?.withRenderingMode(.alwaysOriginal),
+            selectedImage: UIImage(named: TabBarIcons.activeScrollImageName)?.withRenderingMode(.alwaysOriginal)
         )
+        imagesListViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
         profileViewController.tabBarItem = UITabBarItem(
             title: nil,
-            image: UIImage(named: TabBarIcons.inactiveProfile)?.withRenderingMode(.alwaysOriginal),
-            selectedImage: UIImage(named: TabBarIcons.activeProfile)?.withRenderingMode(.alwaysOriginal)
+            image: UIImage(named: TabBarIcons.inactiveProfileImageName)?.withRenderingMode(.alwaysOriginal),
+            selectedImage: UIImage(named: TabBarIcons.activeProfileImageName)?.withRenderingMode(.alwaysOriginal)
         )
+        profileViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
 
         viewControllers = [imagesListViewController, profileViewController]
     }
 
+    // MARK: - Tab Bar Icons
+
     private enum TabBarIcons {
-        static let inactiveScroll = "NoActiveScroll"
-        static let activeScroll = "ActiveScroll"
-        static let inactiveProfile = "NoActiveProfile"
-        static let activeProfile = "ActiveProfile"
+        static let inactiveScrollImageName = "NoActiveScroll"
+        static let activeScrollImageName = "ActiveScroll"
+        static let inactiveProfileImageName = "NoActiveProfile"
+        static let activeProfileImageName = "ActiveProfile"
     }
 }

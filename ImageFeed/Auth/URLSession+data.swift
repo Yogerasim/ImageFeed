@@ -1,4 +1,4 @@
-import UIKit
+import Foundation
 
 // MARK: - NetworkError
 
@@ -16,7 +16,7 @@ extension URLSession {
         completion: @escaping (Result<T, Error>) -> Void
     ) -> URLSessionTask {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.keyDecodingStrategy = .convertFromSnakeCase // 👈 используем snakeCase-декодинг
 
         let task = dataTask(with: request) { data, response, error in
             if let error = error {
@@ -35,11 +35,11 @@ extension URLSession {
 
             guard let data = data, !data.isEmpty else {
                 print("[URLSession] ❌ Пустой ответ от сервера")
-                completion(.failure(AuthServiceError.invalidResponse))
+                completion(.failure(NetworkError.urlSessionError))
                 return
             }
 
-            if !(200 ... 299).contains(httpResponse.statusCode) {
+            if !(200...299).contains(httpResponse.statusCode) {
                 let responseBody = String(data: data, encoding: .utf8) ?? "nil"
                 print("[URLSession] ⚠️ Ответ с ошибкой: \(responseBody)")
                 completion(.failure(NetworkError.httpStatusCode(httpResponse.statusCode)))
@@ -55,7 +55,6 @@ extension URLSession {
                 completion(.success(decodedObject))
             } catch {
                 print("[URLSession] ❌ Ошибка декодирования: \(error.localizedDescription)")
-                print("[URLSession] 📦 JSON: \(rawJSON)")
                 completion(.failure(error))
             }
         }
