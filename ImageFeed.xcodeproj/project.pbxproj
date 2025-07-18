@@ -32,6 +32,7 @@
 		A7C9E6022DED8E0E006B5573 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7C9E6012DED8E0E006B5573 /* SingleImageViewController.swift */; };
 		A7D260852DE30EDA00749D25 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D260842DE30EDA00749D25 /* ImagesListCell.swift */; };
 		A7D4275E2E258281002B00F0 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D4275D2E25827B002B00F0 /* MainTabBarController.swift */; };
+		A7FA4D5E2E2A1BCB00E7FDEB /* UIWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FA4D5D2E2A1BC100E7FDEB /* UIWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 		A7C9E6012DED8E0E006B5573 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		A7D260842DE30EDA00749D25 /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
 		A7D4275D2E25827B002B00F0 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		A7FA4D5D2E2A1BC100E7FDEB /* UIWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIWindow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +98,7 @@
 		A718ABC72E0AB36800624CFF /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				A7FA4D5D2E2A1BC100E7FDEB /* UIWindow.swift */,
 				A718ABC92E0AB3D300624CFF /* JSONDecoder+SnakeCase.swift */,
 			);
 			path = Utilities;
@@ -273,6 +276,7 @@
 				A7260A312DDA1AEE00389349 /* ImagesListViewController.swift in Sources */,
 				A7D260852DE30EDA00749D25 /* ImagesListCell.swift in Sources */,
 				A76CD9DF2E14479B009807A4 /* ProfileService.swift in Sources */,
+				A7FA4D5E2E2A1BCB00E7FDEB /* UIWindow.swift in Sources */,
 				A7D4275E2E258281002B00F0 /* MainTabBarController.swift in Sources */,
 				A7C9E5FF2DEC8284006B5573 /* ProfileViewController.swift in Sources */,
 				A718ABBB2E09D54D00624CFF /* SplashViewController.swift in Sources */,
