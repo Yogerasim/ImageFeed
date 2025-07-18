@@ -14,6 +14,9 @@ struct OAuthTokenResponseBody: Codable {
 // MARK: - OAuth2TokenStorage
 
 final class OAuth2TokenStorage {
+    static let shared = OAuth2TokenStorage()
+    private init() {}
+
     private let tokenKey = "OAuthToken"
 
     var token: String? {
@@ -22,7 +25,6 @@ final class OAuth2TokenStorage {
                 print("[OAuth2TokenStorage] ❌ Токен не найден в Keychain")
                 return nil
             }
-
             print("[OAuth2TokenStorage] ✅ Токен получен из Keychain")
             return token
         }
@@ -32,7 +34,6 @@ final class OAuth2TokenStorage {
                 print("[OAuth2TokenStorage] \(success ? "🗑 Удалён" : "❌ Не удалось удалить") токен из Keychain")
                 return
             }
-
             let success = KeychainWrapper.standard.set(token, forKey: tokenKey)
             print("[OAuth2TokenStorage] \(success ? "✅" : "❌") Сохранение токена в Keychain")
         }

@@ -1,27 +1,20 @@
 import Foundation
 
 final class ProfileImageService {
-
+    
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
+    static let DidChangeNotification = Notification.Name("ProfileImageProviderDidChange")
 
     private init() {}
 
-    private let tokenStorage = OAuth2TokenStorage()
+    private let tokenStorage = OAuth2TokenStorage.shared
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
 
     private(set) var avatarURL: URL?
 
     // MARK: - DTO
-
-    private struct UserResult: Codable, CustomDebugStringConvertible {
-        let profileImage: ProfileImageURLs?
-
-        var debugDescription: String {
-            "profileImage.large: \(profileImage?.large?.absoluteString ?? "nil")"
-        }
-    }
 
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<URL, Error>) -> Void) {
         task?.cancel()
@@ -30,7 +23,6 @@ final class ProfileImageService {
             completion(.failure(AuthServiceError.tokenMissing))
             return
         }
-        
 
         guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else {
             completion(.failure(AuthServiceError.invalidRequest))
@@ -38,15 +30,15 @@ final class ProfileImageService {
         }
 
         var request = URLRequest(url: url)
-        request.httpMethod = "GET"
+        request.httpMethod = HTTPMethod.get.rawValue
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
         task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
-            guard let self = self else { return }
+            guard let self else { return }
             self.task = nil
 
             switch result {
-            case .success(let userResult):
+            case let .success(userResult):
                 guard let profileImage = userResult.profileImage else {
                     print("[ProfileImageService] ❌ profile_image отсутствует")
                     DispatchQueue.main.async {
@@ -79,7 +71,7 @@ final class ProfileImageService {
                     )
                 }
 
-            case .failure(let error):
+            case let .failure(error):
                 print("[ProfileImageService] ❌ Ошибка: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     completion(.failure(error))

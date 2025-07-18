@@ -39,7 +39,7 @@ extension URLSession {
                 return
             }
 
-            if !(200...299).contains(httpResponse.statusCode) {
+            if !(200 ... 299).contains(httpResponse.statusCode) {
                 let responseBody = String(data: data, encoding: .utf8) ?? "nil"
                 print("[URLSession] ⚠️ Ответ с ошибкой: \(responseBody)")
                 completion(.failure(NetworkError.httpStatusCode(httpResponse.statusCode)))

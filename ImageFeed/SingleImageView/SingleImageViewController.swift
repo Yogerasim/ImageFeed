@@ -29,7 +29,7 @@ final class SingleImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    @IBAction private func didTapShareButton(_ sender: UIButton) {
+    @IBAction private func didTapShareButton(_: UIButton) {
         guard let image else { return }
         let share = UIActivityViewController(
             activityItems: [image],
@@ -88,11 +88,11 @@ private extension SingleImageViewController {
 // MARK: - UIScrollViewDelegate
 
 extension SingleImageViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+    func viewForZooming(in _: UIScrollView) -> UIView? {
         imageView
     }
 
-    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+    func scrollViewDidZoom(_: UIScrollView) {
         centerImage()
     }
 }

@@ -5,7 +5,7 @@ final class ImagesListViewController: UIViewController {
 
     @IBOutlet private var tableView: UITableView!
 
-    private let photoNames: [String] = Array(0..<20).map { "\($0)" }
+    private let photoNames: [String] = Array(0 ..< 20).map { "\($0)" }
 
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -41,7 +41,7 @@ final class ImagesListViewController: UIViewController {
 }
 
 extension ImagesListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         return photoNames.count
     }
 
@@ -69,8 +69,7 @@ extension ImagesListViewController {
 }
 
 extension ImagesListViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
 
@@ -91,4 +90,3 @@ extension ImagesListViewController: UITableViewDelegate {
         return height + insets.top + insets.bottom
     }
 }
-

@@ -1,33 +1,5 @@
 import Foundation
 
-// MARK: - ProfileImageURLs
-
-struct ProfileImageURLs: Codable {
-    let small: URL?
-    let medium: URL?
-    let large: URL?
-}
-
-// MARK: - ProfileResult DTO from Unsplash
-
-struct ProfileResult: Codable, CustomDebugStringConvertible {
-    let username: String?
-    let firstName: String?
-    let lastName: String?
-    let bio: String?
-    let profileImage: ProfileImageURLs?
-
-    var debugDescription: String {
-        """
-        username: \(username ?? "nil")
-        firstName: \(firstName ?? "nil")
-        lastName: \(lastName ?? "nil")
-        bio: \(bio ?? "nil")
-        profileImage.large: \(profileImage?.large?.absoluteString ?? "nil")
-        """
-    }
-}
-
 // MARK: - UI Model
 
 struct Profile {
@@ -41,11 +13,10 @@ struct Profile {
 // MARK: - ProfileService
 
 final class ProfileService {
-
     static let shared = ProfileService()
     private init() {}
 
-    private let tokenStorage = OAuth2TokenStorage()
+    private let tokenStorage = OAuth2TokenStorage.shared
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
 
@@ -61,7 +32,8 @@ final class ProfileService {
         }
 
         guard let url = URL(string: "https://api.unsplash.com/me"),
-              let request = makeRequest(url: url, token: token) else {
+              let request = makeRequest(url: url, token: token)
+        else {
             print("[ProfileService] ❌ Неверный URL или не удалось создать запрос")
             completion(.failure(AuthServiceError.invalidRequest))
             return
@@ -74,8 +46,9 @@ final class ProfileService {
             self.task = nil
 
             switch result {
-            case .success(let profileResult):
-                print("[DEBUG] 📄 profileResult: \(profileResult.debugDescription)")
+            case let .success(profileResult):
+                print("[DEBUG] 📄 profileResult:")
+                dump(profileResult)
                 let profile = Profile(
                     username: profileResult.username ?? "",
                     name: "\(profileResult.firstName ?? "") \(profileResult.lastName ?? "")".trimmingCharacters(in: .whitespaces),
@@ -93,7 +66,7 @@ final class ProfileService {
                     completion(.success(profile))
                 }
 
-            case .failure(let error):
+            case let .failure(error):
                 print("[ProfileService] ❌ Ошибка при загрузке профиля: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     completion(.failure(error))
@@ -106,7 +79,7 @@ final class ProfileService {
 
     private func makeRequest(url: URL, token: String) -> URLRequest? {
         var request = URLRequest(url: url)
-        request.httpMethod = "GET"
+        request.httpMethod = HTTPMethod.get.rawValue
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("v1", forHTTPHeaderField: "Accept-Version")
         return request

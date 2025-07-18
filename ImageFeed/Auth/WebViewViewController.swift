@@ -17,10 +17,9 @@ protocol WebViewViewControllerDelegate: AnyObject {
 // MARK: - WebViewViewController
 
 final class WebViewViewController: UIViewController {
-
     // MARK: - IBOutlets
 
-    @IBOutlet private weak var webView: WKWebView!
+    @IBOutlet private var webView: WKWebView!
     @IBOutlet private var progressView: UIProgressView!
 
     // MARK: - Properties
@@ -38,19 +37,21 @@ final class WebViewViewController: UIViewController {
     }
 
     // MARK: - KVO
+
     private func observeProgress() {
-            progressObservation = webView.observe(\.estimatedProgress, options: [.new]) { [weak self] webView, _ in
-                self?.updateProgress()
-            }
+        progressObservation = webView.observe(\.estimatedProgress, options: [.new]) { [weak self] _, _ in
+            self?.updateProgress()
         }
+    }
 
     private func updateProgress() {
         progressView.progress = Float(webView.estimatedProgress)
         progressView.isHidden = abs(webView.estimatedProgress - 1.0) <= 0.0001
     }
+
     deinit {
-            progressObservation?.invalidate()
-        }
+        progressObservation?.invalidate()
+    }
 
     // MARK: - Private Methods
 
@@ -64,7 +65,7 @@ final class WebViewViewController: UIViewController {
             URLQueryItem(name: "client_id", value: Constants.accessKey),
             URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
             URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: Constants.accessScope)
+            URLQueryItem(name: "scope", value: Constants.accessScope),
         ]
 
         guard let url = urlComponents.url else {
@@ -91,7 +92,7 @@ final class WebViewViewController: UIViewController {
 
     // MARK: - IBActions
 
-    @IBAction private func didTapBackButton(_ sender: Any?) {
+    @IBAction private func didTapBackButton(_: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
     }
 }
@@ -100,7 +101,7 @@ final class WebViewViewController: UIViewController {
 
 extension WebViewViewController: WKNavigationDelegate {
     func webView(
-        _ webView: WKWebView,
+        _: WKWebView,
         decidePolicyFor navigationAction: WKNavigationAction,
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {

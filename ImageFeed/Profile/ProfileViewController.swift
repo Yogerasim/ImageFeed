@@ -2,199 +2,148 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
+    private let viewModel = ProfileViewModel()
 
     // MARK: - UI Elements
 
-    private let avatarImageView = UIImageView()
-    private let nameLabel = UILabel()
-    private let loginNameLabel = UILabel()
-    private let descriptionLabel = UILabel()
-    private let logoutButton = UIButton()
+    private let avatarImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.layer.cornerRadius = 35
+        iv.clipsToBounds = true
+        iv.contentMode = .scaleAspectFill
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        return iv
+    }()
+
+    private let nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 23)
+        label.textColor = .white
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let loginNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 13)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 13)
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.text = "Hello, world!" // статичный текст
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let logoutButton: UIButton = {
+        let button = UIButton(type: .system)
+        let image = UIImage(named: "logout_button")?.withRenderingMode(.alwaysOriginal)
+        button.setImage(image, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
 
     // MARK: - Lifecycle
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        addObserver()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        addObserver()
-    }
-
-    deinit {
-        removeObserver()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(red: 0.102, green: 0.106, blue: 0.133, alpha: 1.0)
         setupUI()
+        bindViewModel()
+        viewModel.fetchProfile()
+    }
 
-        if let profile = ProfileService.shared.profile {
-            updateProfileDetails(profile: profile)
-        } else {
-            ProfileService.shared.fetchProfile { [weak self] result in
-                switch result {
-                case .success(let profile):
-                    DispatchQueue.main.async {
-                        self?.updateProfileDetails(profile: profile)
-                        ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { _ in }
-                    }
-                case .failure(let error):
-                    print("[ProfileViewController] ❌ Ошибка загрузки профиля: \(error.localizedDescription)")
-                }
-            }
-        }
+    // MARK: - Setup UI
 
-        if let avatarURL = ProfileImageService.shared.avatarURL {
-            updateAvatarImage(with: avatarURL)
+    private func setupUI() {
+        view.backgroundColor = UIColor(named: "ypBlack", in: .main, compatibleWith: traitCollection)
+        addSubviews()
+        setupConstraints()
+        setupActions()
+    }
+
+    private func addSubviews() {
+        [avatarImageView, nameLabel, loginNameLabel, descriptionLabel, logoutButton].forEach {
+            view.addSubview($0)
         }
     }
 
-    // MARK: - Observers
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            avatarImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            avatarImageView.widthAnchor.constraint(equalToConstant: 70),
+            avatarImageView.heightAnchor.constraint(equalToConstant: 70),
 
-    private func addObserver() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(updateAvatar(notification:)),
-            name: ProfileImageService.didChangeNotification,
-            object: nil
-        )
+            nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 8),
+            nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor),
+
+            loginNameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
+            loginNameLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+
+            descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8),
+            descriptionLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+
+            logoutButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor),
+            logoutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+        ])
     }
 
-    private func removeObserver() {
-        NotificationCenter.default.removeObserver(
-            self,
-            name: ProfileImageService.didChangeNotification,
-            object: nil
-        )
+    private func setupActions() {
+        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
     }
 
-    @objc private func updateAvatar(notification: Notification) {
-        guard isViewLoaded else {
-            print("[ProfileViewController] ⚠️ View не загружен")
+    // MARK: - Bindings
+
+    private func bindViewModel() {
+        viewModel.onProfileChanged = { [weak self] profile in
+            self?.nameLabel.text = profile.name
+            self?.loginNameLabel.text = profile.loginName
+        }
+
+        viewModel.onAvatarChanged = { [weak self] url in
+            guard let self = self, let url = url else { return }
+            self.avatarImageView.kf.setImage(
+                with: url,
+                placeholder: UIImage(named: "AvatarPlaceholder"),
+                options: [
+                    .cacheOriginalImage,
+                    .transition(.fade(0.2)),
+                ]
+            )
+        }
+    }
+
+    // MARK: - Actions
+
+    @objc private func didTapLogoutButton() {
+    
+        OAuth2TokenStorage.shared.token = nil
+        
+        guard
+            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+            let window = windowScene.windows.first
+        else {
+            print("[ProfileVC] Не удалось получить окно для смены rootViewController")
             return
         }
-
-        if let userInfo = notification.userInfo {
-            print("[ProfileViewController] 📨 Получено userInfo: \(userInfo)")
-
-            if let avatarURL = userInfo["URL"] as? URL {
-                updateAvatarImage(with: avatarURL)
-            } else {
-                print("[ProfileViewController] ❌ 'URL' не является URL: \(type(of: userInfo["URL"] ?? "nil")) — значение: \(userInfo["URL"] ?? "nil")")
-            }
-        } else {
-            print("[ProfileViewController] ❌ userInfo отсутствует")
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        
+        guard let authVC = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
+            print("[ProfileVC] AuthViewController не найден в storyboard")
+            return
         }
-    }
-
-    private func updateAvatarImage(with url: URL) {
-        avatarImageView.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "Avatar"),
-            options: [
-                .cacheOriginalImage,
-                .transition(.fade(0.2))
-            ]) { result in
-                switch result {
-                case .success:
-                    print("[ProfileViewController] ✅ Аватарка загружена через Kingfisher")
-                case .failure(let error):
-                    print("[ProfileViewController] ❌ Ошибка загрузки через Kingfisher: \(error.localizedDescription)")
-                }
-            }
-    }
-
-    private func updateProfileDetails(profile: Profile) {
-        nameLabel.text = profile.name
-        loginNameLabel.text = "\(profile.loginName)"
-        descriptionLabel.text = "Hello, world!" // Статичный текст
-    }
-}
-
-// MARK: - UI Setup
-
-private extension ProfileViewController {
-
-    func setupUI() {
-        setupAvatarImageView()
-        setupNameLabel()
-        setupLoginNameLabel()
-        setupDescriptionLabel()
-        setupLogoutButton()
-    }
-
-    func setupAvatarImageView() {
-        avatarImageView.image = UIImage(named: "Avatar") // Заглушка
-        avatarImageView.contentMode = .scaleAspectFill
-        avatarImageView.clipsToBounds = true
-        avatarImageView.layer.cornerRadius = 35
-        avatarImageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(avatarImageView)
-
-        NSLayoutConstraint.activate([
-            avatarImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            avatarImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            avatarImageView.widthAnchor.constraint(equalToConstant: 70),
-            avatarImageView.heightAnchor.constraint(equalToConstant: 70)
-        ])
-    }
-
-    func setupNameLabel() {
-        nameLabel.font = UIFont.boldSystemFont(ofSize: 23)
-        nameLabel.textColor = .white
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(nameLabel)
-
-        NSLayoutConstraint.activate([
-            nameLabel.leadingAnchor.constraint(equalTo: avatarImageView.leadingAnchor, constant: -4),
-            nameLabel.topAnchor.constraint(equalTo: avatarImageView.bottomAnchor, constant: 8)
-        ])
-    }
-
-    func setupLoginNameLabel() {
-        loginNameLabel.font = UIFont.systemFont(ofSize: 13)
-        loginNameLabel.textColor = .gray
-        loginNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(loginNameLabel)
-
-        NSLayoutConstraint.activate([
-            loginNameLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            loginNameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8)
-        ])
-    }
-
-    func setupDescriptionLabel() {
-        descriptionLabel.font = UIFont.systemFont(ofSize: 13)
-        descriptionLabel.textColor = .white
-        descriptionLabel.numberOfLines = 0
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(descriptionLabel)
-
-        NSLayoutConstraint.activate([
-            descriptionLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            descriptionLabel.topAnchor.constraint(equalTo: loginNameLabel.bottomAnchor, constant: 8)
-        ])
-    }
-
-    func setupLogoutButton() {
-        logoutButton.setImage(UIImage(named: "logout_button"), for: .normal)
-        logoutButton.tintColor = .red
-        logoutButton.translatesAutoresizingMaskIntoConstraints = false
-        logoutButton.addTarget(self, action: #selector(didTapLogoutButton), for: .touchUpInside)
-        view.addSubview(logoutButton)
-
-        NSLayoutConstraint.activate([
-            logoutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            logoutButton.centerYAnchor.constraint(equalTo: avatarImageView.centerYAnchor)
-        ])
-    }
-
-    @objc func didTapLogoutButton() {
-        tabBarController?.selectedIndex = 0
+        
+        let nav = UINavigationController(rootViewController: authVC)
+        
+        window.rootViewController = nav
+        window.makeKeyAndVisible()
     }
 }

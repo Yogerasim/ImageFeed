@@ -1,5 +1,5 @@
-import UIKit
 import ProgressHUD
+import UIKit
 
 protocol AuthViewControllerDelegate: AnyObject {
     func didAuthenticate(_ vc: AuthViewController)
@@ -8,7 +8,6 @@ protocol AuthViewControllerDelegate: AnyObject {
 // MARK: - AuthViewController
 
 final class AuthViewController: UIViewController {
-    
     weak var delegate: AuthViewControllerDelegate?
 
     // MARK: - Properties
@@ -50,13 +49,12 @@ final class AuthViewController: UIViewController {
 // MARK: - WebViewViewControllerDelegate
 
 extension AuthViewController: WebViewViewControllerDelegate {
-    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+    func webViewViewController(_: WebViewViewController, didAuthenticateWithCode code: String) {
         UIBlockingProgressHUD.show()
         OAuth2Service.shared.fetchOAuthToken(code) { [weak self] result in
             DispatchQueue.main.async {
-                
                 UIBlockingProgressHUD.dismiss()
-                
+
                 switch result {
                 case .success:
                     guard
@@ -67,18 +65,18 @@ extension AuthViewController: WebViewViewControllerDelegate {
                         assertionFailure("Не удалось получить окно")
                         return
                     }
-                    
+
                     let storyboard = UIStoryboard(name: "Main", bundle: .main)
                     guard let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as? UITabBarController else {
                         print("[AuthVC] MainTabBarController не найден в storyboard")
                         assertionFailure("Не найден MainTabBarController")
                         return
                     }
-                    
+
                     window.rootViewController = tabBarController
                     window.makeKeyAndVisible()
-                    
-                case .failure(let error):
+
+                case let .failure(error):
                     print("[AuthVC] Ошибка получения токена: \(error.localizedDescription)")
                     let alert = UIAlertController(
                         title: "Что-то пошло не так",

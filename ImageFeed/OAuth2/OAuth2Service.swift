@@ -9,17 +9,14 @@ enum AuthServiceError: Error {
     case tokenMissing
 }
 
-
-
 // MARK: - OAuth2Service
 
 final class OAuth2Service {
-    
     static let shared = OAuth2Service()
     private init() {}
 
     private let urlSession = URLSession.shared
-    private let tokenStorage = OAuth2TokenStorage()
+    private let tokenStorage = OAuth2TokenStorage.shared
 
     private var task: URLSessionTask?
     private var lastCode: String?
@@ -30,18 +27,20 @@ final class OAuth2Service {
         assert(Thread.isMainThread)
 
         if let task = task {
-            if lastCode != code {
-                print("[OAuth2Service] 🔁 Отменяем предыдущий запрос с кодом: \(lastCode ?? "nil")")
-                task.cancel()
-            } else {
+            guard lastCode != code else {
                 print("[OAuth2Service] ⚠️ Повторный запрос с тем же кодом: \(code)")
                 completion(.failure(AuthServiceError.invalidRequest))
                 return
             }
-        } else if lastCode == code {
-            print("[OAuth2Service] ⚠️ Повторный код при пустом task: \(code)")
-            completion(.failure(AuthServiceError.invalidRequest))
-            return
+
+            print("[OAuth2Service] 🔁 Отменяем предыдущий запрос с кодом: \(lastCode ?? "nil")")
+            task.cancel()
+        } else {
+            guard lastCode != code else {
+                print("[OAuth2Service] ⚠️ Повторный код при пустом task: \(code)")
+                completion(.failure(AuthServiceError.invalidRequest))
+                return
+            }
         }
 
         lastCode = code
@@ -59,13 +58,13 @@ final class OAuth2Service {
                 self?.lastCode = nil
 
                 switch result {
-                case .success(let decoded):
+                case let .success(decoded):
                     let token = decoded.accessToken
                     print("[OAuth2Service] ✅ Получен токен: \(token.prefix(6))... (обрезан)")
                     self?.tokenStorage.token = token
                     completion(.success(token))
 
-                case .failure(let error):
+                case let .failure(error):
                     print("[OAuth2Service] ❌ Ошибка получения токена: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
@@ -91,7 +90,7 @@ final class OAuth2Service {
             URLQueryItem(name: "client_secret", value: Constants.secretKey),
             URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
             URLQueryItem(name: "code", value: code),
-            URLQueryItem(name: "grant_type", value: "authorization_code")
+            URLQueryItem(name: "grant_type", value: "authorization_code"),
         ]
 
         guard let url = components.url(relativeTo: baseURL) else {
@@ -100,7 +99,7 @@ final class OAuth2Service {
         }
 
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        request.httpMethod = HTTPMethod.post.rawValue
         return request
     }
 }
