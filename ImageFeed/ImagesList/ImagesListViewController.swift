@@ -6,6 +6,8 @@ final class ImagesListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
 
     private let photoNames: [String] = Array(0 ..< 20).map { "\($0)" }
+    
+    private let imagesListService = ImagesListService()
 
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -20,6 +22,19 @@ final class ImagesListViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        
+        NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(imagesListDidChange),
+                name: ImagesListService.didChangeNotification,
+                object: nil
+            )
+
+            ImagesListService().fetchPhotosNextPage()
+    }
+    
+    @objc private func imagesListDidChange() {
+        tableView.reloadData()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
