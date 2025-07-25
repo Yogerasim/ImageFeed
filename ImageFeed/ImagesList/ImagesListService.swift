@@ -7,6 +7,7 @@ final class ImagesListService {
     private var lastLoadedPage: Int?
     private var isLoading = false
     private let urlSession = URLSession.shared
+    private var isTogglingLike: [String: Bool] = [:]
     
     func fetchPhotosNextPage() {
         guard !isLoading else {
@@ -33,31 +34,47 @@ final class ImagesListService {
                 return
             }
 
-            guard
-                let data = data,
-                let photoResults = try? JSONDecoder.snakeCaseDecoder.decode([PhotoResult].self, from: data)
-            else {
-                print("❌ Ошибка декодирования данных.")
+            guard let data = data else {
+                print("❌ Нет данных от сервера.")
                 return
             }
 
-            let newPhotos: [Photo] = photoResults.map { result in
-                Photo(
-                    id: result.id,
-                    size: CGSize(width: result.width, height: result.height),
-                    createdAt: result.createdAt,
-                    welcomeDescription: result.description,
-                    thumbImageURL: result.urls.thumb,
-                    largeImageURL: result.urls.full,
-                    isLiked: result.likedByUser
-                )
-            }
+            print("📬 Данные получены от сервера")
 
-            DispatchQueue.main.async {
-                self.photos.append(contentsOf: newPhotos)
-                self.lastLoadedPage = nextPage
-                print("✅ Загружено \(newPhotos.count) фото, всего: \(self.photos.count)")
-                NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
+            do {
+                if let jsonArray = try? JSONSerialization.jsonObject(with: data) as? [Any] {
+                    print("📦 Таблица JSON элементов:", jsonArray.count)
+                } else {
+                    print("⚠️ Не удалось сериализовать JSON как массив.")
+                }
+
+                let photoResults = try JSONDecoder.snakeCaseDecoder.decode([PhotoResult].self, from: data)
+                print("✅ Декодирование прошло успешно, count = \(photoResults.count)")
+
+                let newPhotos: [Photo] = photoResults.map { result in
+                    Photo(
+                        id: result.id,
+                        size: CGSize(width: result.width, height: result.height),
+                        createdAt: result.createdAt,
+                        welcomeDescription: result.description,
+                        thumbImageURL: result.urls.thumb,
+                        largeImageURL: result.urls.full,
+                        isLiked: result.likedByUser
+                    )
+                }
+
+                DispatchQueue.main.async {
+                    self.photos.append(contentsOf: newPhotos)
+                    self.lastLoadedPage = nextPage
+                    print("✅ Загружено \(newPhotos.count) фото, всего: \(self.photos.count)")
+                    NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
+                }
+
+            } catch {
+                print("❌ Ошибка декодирования данных: \(error)")
+                if let jsonStr = String(data: data, encoding: .utf8) {
+                    print("📦 JSON строка:\n\(jsonStr)")
+                }
             }
         }
 
@@ -84,5 +101,55 @@ final class ImagesListService {
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         return request
+    }
+    
+    func toggleLike(at index: Int, completion: @escaping (Bool) -> Void) {
+        let photo = photos[index]
+        let photoID = photo.id
+
+        guard isTogglingLike[photoID] != true else {
+            print("⏳ Уже идёт переключение лайка для \(photoID)")
+            completion(false)
+            return
+        }
+
+        print("➡️ Отправка toggleLike для фото \(photoID), текущее состояние: \(photo.isLiked)")
+
+        isTogglingLike[photoID] = true
+        let newLike = !photo.isLiked
+        photos[index].isLiked = newLike
+
+        let method = newLike ? "POST" : "DELETE"
+        var request = URLRequest(url: URL(string: "https://api.unsplash.com/photos/\(photoID)/like")!)
+        request.httpMethod = method
+        request.setValue("Bearer \(OAuth2TokenStorage.shared.token!)", forHTTPHeaderField: "Authorization")
+
+        print("🌐 \(method) запрос на https://api.unsplash.com/photos/\(photoID)/like")
+
+        urlSession.dataTask(with: request) { [weak self] _, response, error in
+            defer { self?.isTogglingLike[photoID] = false }
+
+            guard let self else {
+                DispatchQueue.main.async { completion(false) }
+                return
+            }
+
+            if let error = error {
+                print("❌ Ошибка ответа от сервера для \(photoID): \(error)")
+                DispatchQueue.main.async {
+                    self.photos[index].isLiked = !newLike // откат
+                    NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
+                    completion(false)
+                }
+                return
+            }
+
+            print("✅ Сервер принял \(method) для \(photoID)")
+
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
+                completion(true)
+            }
+        }.resume()
     }
 }
