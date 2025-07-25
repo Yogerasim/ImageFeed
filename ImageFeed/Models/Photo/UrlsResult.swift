@@ -6,4 +6,5 @@ struct UrlsResult: Decodable {
     let regular: String
     let small: String
     let thumb: String
+    let smallS3: String? 
 }
