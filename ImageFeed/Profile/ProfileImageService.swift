@@ -82,3 +82,10 @@ final class ProfileImageService {
         task?.resume()
     }
 }
+
+extension ProfileImageService {
+    func reset() {
+        avatarURL = nil
+        print("[ProfileImageService] avatarURL сброшен")
+    }
+}

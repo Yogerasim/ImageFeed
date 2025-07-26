@@ -25,6 +25,7 @@
 		A76CD9DF2E14479B009807A4 /* ProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76CD9DE2E144798009807A4 /* ProfileService.swift */; };
 		A783FF962E15C4790037CCE8 /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A783FF952E15C4750037CCE8 /* ProfileImageService.swift */; };
 		A783FF992E1648EB0037CCE8 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A783FF982E1648EB0037CCE8 /* Kingfisher */; };
+		A79176EF2E3385FC002A5EBA /* ProfileLogoutService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79176EE2E3385F5002A5EBA /* ProfileLogoutService.swift */; };
 		A79319B52E016EFD00656DE7 /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79319B42E016EF000656DE7 /* AuthViewController.swift */; };
 		A79319B72E01A30D00656DE7 /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79319B62E01A30900656DE7 /* WebViewViewController.swift */; };
 		A79319BA2E01B8BE00656DE7 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A79319B92E01B8BE00656DE7 /* WebKit.framework */; };
@@ -73,6 +74,7 @@
 		A76CD9DC2E143ECC009807A4 /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		A76CD9DE2E144798009807A4 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
 		A783FF952E15C4750037CCE8 /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
+		A79176EE2E3385F5002A5EBA /* ProfileLogoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLogoutService.swift; sourceTree = "<group>"; };
 		A79319B42E016EF000656DE7 /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		A79319B62E01A30900656DE7 /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
 		A79319B92E01B8BE00656DE7 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -171,7 +173,7 @@
 		A7260A2B2DDA1AEE00389349 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				A7D4275D2E25827B002B00F0 /* MainTabBarController.swift */,
+				A79176F02E34B485002A5EBA /* MainTabBarController */,
 				A7C8559A2E30130900C256ED /* Helpers */,
 				A7FA4D652E2A283A00E7FDEB /* Models */,
 				A718ABC82E0AB3BF00624CFF /* Core */,
@@ -190,6 +192,14 @@
 				A7260A3A2DDA1AEF00389349 /* Info.plist */,
 			);
 			path = ImageFeed;
+			sourceTree = "<group>";
+		};
+		A79176F02E34B485002A5EBA /* MainTabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				A7D4275D2E25827B002B00F0 /* MainTabBarController.swift */,
+			);
+			path = MainTabBarController;
 			sourceTree = "<group>";
 		};
 		A79319B32E016EE800656DE7 /* Auth */ = {
@@ -232,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				A7FA4D6B2E2A34D300E7FDEB /* ProfileViewModel.swift */,
+				A79176EE2E3385F5002A5EBA /* ProfileLogoutService.swift */,
 				A783FF952E15C4750037CCE8 /* ProfileImageService.swift */,
 				A76CD9DE2E144798009807A4 /* ProfileService.swift */,
 				A7C9E5FE2DEC8284006B5573 /* ProfileViewController.swift */,
@@ -417,6 +428,7 @@
 				A7FA4D602E2A215A00E7FDEB /* UserResult.swift in Sources */,
 				A718ABB92E09476F00624CFF /* URLSession+data.swift in Sources */,
 				A7FA4D6F2E2A4BB800E7FDEB /* OAuthTokenResponseBody.swift in Sources */,
+				A79176EF2E3385FC002A5EBA /* ProfileLogoutService.swift in Sources */,
 				A79319B72E01A30D00656DE7 /* WebViewViewController.swift in Sources */,
 				A718ABC52E09F27C00624CFF /* OAuth2TokenStorage.swift in Sources */,
 				A76A1D692E06C8C000153096 /* OAuth2Service.swift in Sources */,
