@@ -75,6 +75,8 @@ extension AuthViewController: WebViewViewControllerDelegate {
 
                     window.rootViewController = tabBarController
                     window.makeKeyAndVisible()
+                    
+                    
 
                 case let .failure(error):
                     print("[AuthVC] Ошибка получения токена: \(error.localizedDescription)")

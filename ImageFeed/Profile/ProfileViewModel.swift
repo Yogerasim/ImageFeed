@@ -50,3 +50,5 @@ final class ProfileViewModel {
         NotificationCenter.default.removeObserver(self)
     }
 }
+
+

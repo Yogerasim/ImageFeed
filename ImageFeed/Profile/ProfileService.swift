@@ -31,7 +31,7 @@ final class ProfileService {
             return
         }
 
-        guard let url = URL(string: "https://api.unsplash.com/me"),
+        guard let url = API.profileURL,
               let request = makeRequest(url: url, token: token)
         else {
             print("[ProfileService] ❌ Неверный URL или не удалось создать запрос")
@@ -39,7 +39,7 @@ final class ProfileService {
             return
         }
 
-        print("[ProfileService] 🚀 Запрос профиля с токеном: \(token.prefix(6))... (обрезан)")
+        print("[ProfileService] 🚀 Запрос профиля с токеном: \(token.prefix(6))...")
 
         task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
             guard let self = self else { return }
@@ -47,21 +47,10 @@ final class ProfileService {
 
             switch result {
             case let .success(profileResult):
-                print("[DEBUG] 📄 profileResult:")
-                dump(profileResult)
-                let profile = Profile(
-                    username: profileResult.username ?? "",
-                    name: "\(profileResult.firstName ?? "") \(profileResult.lastName ?? "")".trimmingCharacters(in: .whitespaces),
-                    loginName: "@\(profileResult.username ?? "")",
-                    bio: profileResult.bio,
-                    avatarURL: profileResult.profileImage?.large
-                )
-
+                let profile = Profile(from: profileResult)
                 self.profile = profile
 
                 print("[ProfileService] ✅ Загружен профиль: \(profile.username)")
-                print("[ProfileService] ✅ avatarURL: \(profile.avatarURL?.absoluteString ?? "nil")")
-
                 DispatchQueue.main.async {
                     completion(.success(profile))
                 }
@@ -83,5 +72,12 @@ final class ProfileService {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("v1", forHTTPHeaderField: "Accept-Version")
         return request
+    }
+}
+
+extension ProfileService {
+    func reset() {
+        self.profile = nil
+        print("[ProfileService] Профиль сброшен")
     }
 }

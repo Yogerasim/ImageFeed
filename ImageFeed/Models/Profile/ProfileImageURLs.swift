@@ -5,3 +5,9 @@ struct ProfileImageURLs: Decodable {
     let medium: URL?
     let large: URL?
 }
+
+extension ProfileImageURLs {
+    init(from result: UserResult) {
+        self = result.profileImage ?? ProfileImageURLs(small: nil, medium: nil, large: nil)
+    }
+}
