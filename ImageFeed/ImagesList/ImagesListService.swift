@@ -53,17 +53,7 @@ final class ImagesListService {
                 let photoResults = try JSONDecoder.snakeCaseDecoder.decode([PhotoResult].self, from: data)
                 print("✅ Декодирование прошло успешно, count = \(photoResults.count)")
 
-                let newPhotos: [Photo] = photoResults.map { result in
-                    Photo(
-                        id: result.id,
-                        size: CGSize(width: result.width, height: result.height),
-                        createdAt: result.createdAt,
-                        welcomeDescription: result.description,
-                        thumbImageURL: result.urls.thumb,
-                        largeImageURL: result.urls.full,
-                        isLiked: result.likedByUser
-                    )
-                }
+                let newPhotos = photoResults.map(Photo.init)
 
                 DispatchQueue.main.async {
                     self.photos.append(contentsOf: newPhotos)
@@ -84,20 +74,8 @@ final class ImagesListService {
     }
     
     private func makePhotosRequest(page: Int) -> URLRequest? {
-        guard let token = OAuth2TokenStorage.shared.token else {
-            print("❌ Нет access token для авторизации.")
-            return nil
-        }
-
-        var components = URLComponents(string: "https://api.unsplash.com/photos")
-        components?.queryItems = [
-            URLQueryItem(name: "page", value: "\(page)"),
-            URLQueryItem(name: "per_page", value: "10"),
-            URLQueryItem(name: "order_by", value: "latest")
-        ]
-
-        guard let url = components?.url else {
-            print("❌ Не удалось создать URL.")
+        guard let token = OAuth2TokenStorage.shared.token,
+              let url = API.photosURL(page: page) else {
             return nil
         }
 
@@ -122,17 +100,27 @@ final class ImagesListService {
         let newLike = !photo.isLiked
         photos[index].isLiked = newLike
 
-        let method = newLike ? "POST" : "DELETE"
-        var request = URLRequest(url: URL(string: "https://api.unsplash.com/photos/\(photoID)/like")!)
-        request.httpMethod = method
-        request.setValue("Bearer \(OAuth2TokenStorage.shared.token!)", forHTTPHeaderField: "Authorization")
+        guard
+            let url = API.photoLikeURL(for: photoID),
+            let token = OAuth2TokenStorage.shared.token
+        else {
+            print("❌ Ошибка: не удалось создать URL или получить токен для лайка")
+            isTogglingLike[photoID] = false
+            completion(false)
+            return
+        }
 
-        print("🌐 \(method) запрос на https://api.unsplash.com/photos/\(photoID)/like")
+        let method = newLike ? "POST" : "DELETE"
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        print("🌐 \(method) запрос на \(url.absoluteString)")
 
         urlSession.dataTask(with: request) { [weak self] _, response, error in
             defer { self?.isTogglingLike[photoID] = false }
 
-            guard let self else {
+            guard let self = self else {
                 DispatchQueue.main.async { completion(false) }
                 return
             }
@@ -148,7 +136,6 @@ final class ImagesListService {
             }
 
             print("✅ Сервер принял \(method) для \(photoID)")
-
             DispatchQueue.main.async {
                 NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
                 completion(true)

@@ -24,7 +24,7 @@ final class ProfileImageService {
             return
         }
 
-        guard let url = URL(string: "https://api.unsplash.com/users/\(username)") else {
+        guard let url = API.userProfileURL(username: username) else {
             completion(.failure(AuthServiceError.invalidRequest))
             return
         }
@@ -46,10 +46,6 @@ final class ProfileImageService {
                     }
                     return
                 }
-
-                print("[ProfileImageService] 🔍 profileImage.large: \(profileImage.large?.absoluteString ?? "nil")")
-                print("[ProfileImageService] 🔍 profileImage.medium: \(profileImage.medium?.absoluteString ?? "nil")")
-                print("[ProfileImageService] 🔍 profileImage.small: \(profileImage.small?.absoluteString ?? "nil")")
 
                 guard let avatarURL = profileImage.large ?? profileImage.medium ?? profileImage.small else {
                     print("[ProfileImageService] ❌ Ни один URL не доступен")
