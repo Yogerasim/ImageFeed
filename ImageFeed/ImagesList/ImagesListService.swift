@@ -1,7 +1,9 @@
 import UIKit
+import Kingfisher
 
 final class ImagesListService {
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
+    static let shared = ImagesListService()
     
     private(set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
@@ -90,7 +92,8 @@ final class ImagesListService {
         var components = URLComponents(string: "https://api.unsplash.com/photos")
         components?.queryItems = [
             URLQueryItem(name: "page", value: "\(page)"),
-            URLQueryItem(name: "per_page", value: "10")
+            URLQueryItem(name: "per_page", value: "10"),
+            URLQueryItem(name: "order_by", value: "latest")
         ]
 
         guard let url = components?.url else {
@@ -151,5 +154,31 @@ final class ImagesListService {
                 completion(true)
             }
         }.resume()
+    }
+}
+
+extension ImagesListService {
+    func reset(notify: Bool = true, tableView: UITableView? = nil) {
+        photos = []
+        lastLoadedPage = nil
+        isTogglingLike = [:]
+        isLoading = false
+
+        print("[ImagesListService] 🧹 Состояние сброшено")
+
+        DispatchQueue.main.async {
+            tableView?.reloadData()
+        }
+
+        KingfisherManager.shared.cache.clearMemoryCache()
+        KingfisherManager.shared.cache.clearDiskCache {
+            print("[ImagesListService] 🧹 Кэш изображений Kingfisher очищен")
+        }
+
+        if notify {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
+            }
+        }
     }
 }

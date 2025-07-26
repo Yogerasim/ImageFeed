@@ -85,3 +85,10 @@ final class ProfileService {
         return request
     }
 }
+
+extension ProfileService {
+    func reset() {
+        self.profile = nil
+        print("[ProfileService] Профиль сброшен")
+    }
+}

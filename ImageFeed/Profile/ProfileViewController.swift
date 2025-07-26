@@ -127,31 +127,11 @@ final class ProfileViewController: UIViewController {
                                       message: "Уверены что хотите выйти?",
                                       preferredStyle: .alert)
 
-        let yesAction = UIAlertAction(title: "Да", style: .default) { [weak self] _ in
-            OAuth2TokenStorage.shared.token = nil
-            
-            guard
-                let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                let window = windowScene.windows.first
-            else {
-                print("[ProfileVC] Не удалось получить окно для смены rootViewController")
-                return
-            }
-            
-            let storyboard = UIStoryboard(name: "Main", bundle: .main)
-            
-            guard let authVC = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
-                print("[ProfileVC] AuthViewController не найден в storyboard")
-                return
-            }
-            
-            let nav = UINavigationController(rootViewController: authVC)
-            
-            window.rootViewController = nav
-            window.makeKeyAndVisible()
+        let yesAction = UIAlertAction(title: "Да", style: .default) { _ in
+            ProfileLogoutService.shared.logout()
         }
 
-        let noAction = UIAlertAction(title: "Нет", style: .default)
+        let noAction = UIAlertAction(title: "Нет", style: .cancel)
 
         alert.addAction(yesAction)
         alert.addAction(noAction)
