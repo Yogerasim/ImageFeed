@@ -48,8 +48,8 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
     }
 
     @objc private func imagesListDidChange() {
-        print("📣 imagesListDidChange")
-        tableView.reloadData()
+        print("📣 imagesListDidChange (с анимацией)")
+        updateTableViewAnimated()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -64,6 +64,22 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
 
             let photo = imagesListService.photos[indexPath.row]
             viewController.imageURL = URL(string: photo.largeImageURL)
+        }
+    }
+    private func updateTableViewAnimated() {
+        let oldCount = tableView.numberOfRows(inSection: 0)
+        let newCount = imagesListService.photos.count
+        let addedCount = newCount - oldCount
+
+        guard addedCount > 0 else {
+            print("📭 Нет новых строк для вставки.")
+            return
+        }
+
+        let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
+
+        tableView.performBatchUpdates {
+            tableView.insertRows(at: indexPaths, with: .automatic)
         }
     }
 }

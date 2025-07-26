@@ -8,3 +8,4 @@ struct UrlsResult: Decodable {
     let thumb: String
     let smallS3: String? 
 }
+

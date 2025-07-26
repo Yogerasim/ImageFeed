@@ -17,3 +17,13 @@ struct ProfileResult: Decodable {
         """
     }
 }
+
+extension Profile {
+    init(from result: ProfileResult) {
+        self.username = result.username ?? ""
+        self.name = "\(result.firstName ?? "") \(result.lastName ?? "")".trimmingCharacters(in: .whitespaces)
+        self.loginName = "@\(result.username ?? "")"
+        self.bio = result.bio
+        self.avatarURL = result.profileImage?.large
+    }
+}
