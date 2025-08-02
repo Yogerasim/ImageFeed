@@ -1,7 +1,15 @@
 import UIKit
 import Kingfisher
 
-final class ImagesListService {
+protocol ImagesListServiceProtocol {
+    var photos: [Photo] { get }
+    func fetchPhotosNextPage(completion: @escaping (Bool) -> Void)
+    func toggleLike(at index: Int, completion: @escaping (Bool) -> Void)
+    func changeLike(photoId: String, isLike: Bool, completion: @escaping (Result<Photo, Error>) -> Void)
+    func reset(notify: Bool)
+}
+
+final class ImagesListService: ImagesListServiceProtocol {
     static let didChangeNotification = Notification.Name("ImagesListServiceDidChange")
     static let shared = ImagesListService()
     
@@ -11,9 +19,10 @@ final class ImagesListService {
     private let urlSession = URLSession.shared
     private var isTogglingLike: [String: Bool] = [:]
     
-    func fetchPhotosNextPage() {
+    func fetchPhotosNextPage(completion: @escaping (Bool) -> Void) {
         guard !isLoading else {
             print("⚠️ Загрузка уже идёт — новый запрос не отправляем.")
+            completion(false)
             return
         }
         isLoading = true
@@ -22,6 +31,7 @@ final class ImagesListService {
         guard let request = makePhotosRequest(page: nextPage) else {
             print("❌ Не удалось создать URLRequest.")
             isLoading = false
+            completion(false)
             return
         }
 
@@ -33,40 +43,30 @@ final class ImagesListService {
 
             if let error = error {
                 print("❌ Ошибка загрузки фотографий: \(error.localizedDescription)")
+                DispatchQueue.main.async { completion(false) }
                 return
             }
 
             guard let data = data else {
                 print("❌ Нет данных от сервера.")
+                DispatchQueue.main.async { completion(false) }
                 return
             }
 
-            print("📬 Данные получены от сервера")
-
             do {
-                if let jsonArray = try? JSONSerialization.jsonObject(with: data) as? [Any] {
-                    print("📦 Таблица JSON элементов:", jsonArray.count)
-                } else {
-                    print("⚠️ Не удалось сериализовать JSON как массив.")
-                }
-
                 let photoResults = try JSONDecoder.snakeCaseDecoder.decode([PhotoResult].self, from: data)
-                print("✅ Декодирование прошло успешно, count = \(photoResults.count)")
-
                 let newPhotos = photoResults.map(Photo.init)
 
                 DispatchQueue.main.async {
                     self.photos.append(contentsOf: newPhotos)
                     self.lastLoadedPage = nextPage
-                    print("✅ Загружено \(newPhotos.count) фото, всего: \(self.photos.count)")
                     NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
+                    completion(true)
                 }
 
             } catch {
                 print("❌ Ошибка декодирования данных: \(error)")
-                if let jsonStr = String(data: data, encoding: .utf8) {
-                    print("📦 JSON строка:\n\(jsonStr)")
-                }
+                DispatchQueue.main.async { completion(false) }
             }
         }
 
@@ -142,20 +142,56 @@ final class ImagesListService {
             }
         }.resume()
     }
+    
+    func changeLike(photoId: String, isLike: Bool, completion: @escaping (Result<Photo, Error>) -> Void) {
+        guard let index = photos.firstIndex(where: { $0.id == photoId }) else {
+            completion(.failure(NSError(domain: "PhotoNotFound", code: 404, userInfo: nil)))
+            return
+        }
+
+        let method = isLike ? "POST" : "DELETE"
+
+        guard
+            let url = API.photoLikeURL(for: photoId),
+            let token = OAuth2TokenStorage.shared.token
+        else {
+            completion(.failure(NSError(domain: "InvalidRequest", code: 400, userInfo: nil)))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        urlSession.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+
+            self.photos[index].isLiked = isLike
+
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Self.didChangeNotification, object: nil)
+                completion(.success(self.photos[index]))
+            }
+
+        }.resume()
+    }
 }
 
 extension ImagesListService {
-    func reset(notify: Bool = true, tableView: UITableView? = nil) {
+    func reset(notify: Bool) {
         photos = []
         lastLoadedPage = nil
         isTogglingLike = [:]
         isLoading = false
 
-        print("[ImagesListService] 🧹 Состояние сброшено")
-
-        DispatchQueue.main.async {
-            tableView?.reloadData()
-        }
+        print("[ImagesListService] 🧹 Состояние сброшено (протокольная версия)")
 
         KingfisherManager.shared.cache.clearMemoryCache()
         KingfisherManager.shared.cache.clearDiskCache {

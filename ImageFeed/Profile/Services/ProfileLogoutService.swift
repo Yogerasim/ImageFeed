@@ -44,12 +44,13 @@ final class ProfileLogoutService {
             
             for vc in nav.viewControllers {
                 if let imagesVC = vc as? ImagesListViewController {
-                    ImagesListService.shared.reset(tableView: imagesVC.exposedTableView)
+                    ImagesListService.shared.reset(notify: true)
+                    imagesVC.exposedTableView?.reloadData()
                     break
                 }
             }
         } else {
-            ImagesListService.shared.reset()
+            ImagesListService.shared.reset(notify: true)
         }
 
         // Очистка изображений Kingfisher

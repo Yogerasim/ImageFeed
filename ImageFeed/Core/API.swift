@@ -6,6 +6,7 @@ struct API {
     static var profileURL: URL? {
         URL(string: "\(baseURL)/me")
     }
+    
 
     static func userProfileURL(username: String) -> URL? {
         URL(string: "\(baseURL)/users/\(username)")
@@ -24,4 +25,5 @@ struct API {
         ]
         return components?.url
     }
+    
 }

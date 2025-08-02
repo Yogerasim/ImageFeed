@@ -10,9 +10,16 @@ struct Profile {
     let avatarURL: URL?
 }
 
+// MARK: - Protocol
+
+protocol ProfileServiceProtocol {
+    var profile: Profile? { get }
+    func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void)
+}
+
 // MARK: - ProfileService
 
-final class ProfileService {
+final class ProfileService: ProfileServiceProtocol {
     static let shared = ProfileService()
     private init() {}
 

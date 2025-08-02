@@ -30,6 +30,17 @@ final class AuthViewController: UIViewController {
                 assertionFailure("[AuthVC] WebViewViewController не найден в segue")
                 return
             }
+            
+            let authHelper = AuthHelper(
+                        clientId: Constants.accessKey,
+                        redirectURI: Constants.redirectURI,
+                        accessScope: Constants.accessScope
+                    )
+                    let presenter = WebViewPresenter(authHelper: authHelper)
+                    presenter.view = webViewVC
+                    webViewVC.presenter = presenter
+
+            
             webViewVC.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)

@@ -2,15 +2,18 @@ import Foundation
 
 final class ProfileViewModel {
 
-    // MARK: - Public
-
     var onProfileChanged: ((Profile) -> Void)?
     var onAvatarChanged: ((URL?) -> Void)?
 
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
+    private let profileService: ProfileServiceProtocol
+    private let profileImageService: ProfileImageServiceProtocol
 
-    init() {
+    init(
+        profileService: ProfileServiceProtocol = ProfileService.shared,
+        profileImageService: ProfileImageServiceProtocol = ProfileImageService.shared
+    ) {
+        self.profileService = profileService
+        self.profileImageService = profileImageService
         observeAvatarChanges()
     }
 
@@ -50,5 +53,3 @@ final class ProfileViewModel {
         NotificationCenter.default.removeObserver(self)
     }
 }
-
-

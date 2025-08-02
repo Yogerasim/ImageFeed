@@ -1,6 +1,10 @@
 import Foundation
 
-final class ProfileImageService {
+protocol ProfileImageServiceProtocol {
+    func fetchProfileImageURL(username: String, completion: @escaping (Result<URL, Error>) -> Void)
+}
+
+final class ProfileImageService: ProfileImageServiceProtocol {
     
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
@@ -16,7 +20,7 @@ final class ProfileImageService {
 
     // MARK: - DTO
 
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<URL, Error>) -> Void) {
+    func fetchProfileImageURL(username: String, completion: @escaping (Result<URL, Error>) -> Void) {
         task?.cancel()
 
         guard let token = tokenStorage.token else {
