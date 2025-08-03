@@ -31,14 +31,14 @@ final class AuthViewController: UIViewController {
                 return
             }
             
-            let authHelper = AuthHelper(
-                        clientId: Constants.accessKey,
-                        redirectURI: Constants.redirectURI,
-                        accessScope: Constants.accessScope
-                    )
-                    let presenter = WebViewPresenter(authHelper: authHelper)
-                    presenter.view = webViewVC
-                    webViewVC.presenter = presenter
+            let authHelper: AuthHelperProtocol = AuthHelper(
+                clientId: Constants.accessKey,
+                redirectURI: Constants.redirectURI,
+                accessScope: Constants.accessScope
+            )
+            let presenter = WebViewPresenter(authHelper: authHelper)
+            presenter.view = webViewVC
+            webViewVC.presenter = presenter
 
             
             webViewVC.delegate = self

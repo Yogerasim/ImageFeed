@@ -12,6 +12,7 @@ final class ProfileViewController: UIViewController {
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
         iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.accessibilityIdentifier = "ProfileAvatarImageView"
         return iv
     }()
     
@@ -20,6 +21,7 @@ final class ProfileViewController: UIViewController {
         label.font = .boldSystemFont(ofSize: 23)
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.accessibilityIdentifier = "ProfileNameLabel"
         return label
     }()
     
@@ -28,6 +30,7 @@ final class ProfileViewController: UIViewController {
         label.font = .systemFont(ofSize: 13)
         label.textColor = .gray
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.accessibilityIdentifier = "ProfileLoginLabel"
         return label
     }()
     
@@ -38,6 +41,7 @@ final class ProfileViewController: UIViewController {
         label.numberOfLines = 0
         label.text = "Hello, world!" // статичный текст
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.accessibilityIdentifier = "ProfileBioLabel"
         return label
     }()
     
@@ -46,6 +50,7 @@ final class ProfileViewController: UIViewController {
         let image = UIImage(named: "logout_button")?.withRenderingMode(.alwaysOriginal)
         button.setImage(image, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.accessibilityIdentifier = "ProfileLogoutButton"
         return button
     }()
     

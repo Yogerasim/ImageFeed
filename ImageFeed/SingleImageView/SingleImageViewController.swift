@@ -14,6 +14,10 @@ final class SingleImageViewController: UIViewController {
         scrollView.maximumZoomScale = 1.25
         scrollView.delegate = self
 
+        // Устанавливаем идентификаторы только в debug/test режиме для UI-тестов
+        scrollView.setTestAccessibilityIdentifier("SingleImageScrollView")
+        imageView.setTestAccessibilityIdentifier("SingleImageView")
+
         loadImage()
     }
 
@@ -42,7 +46,7 @@ private extension SingleImageViewController {
         UIBlockingProgressHUD.show()
 
         imageView.kf.setImage(with: url) { [weak self] result in
-            guard let self else { return }
+            guard let self = self else { return }
 
             UIBlockingProgressHUD.dismiss()
 
@@ -135,5 +139,15 @@ extension SingleImageViewController: UIScrollViewDelegate {
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         centerImage()
+    }
+}
+
+// MARK: - DEBUG
+
+extension UIView {
+    func setTestAccessibilityIdentifier(_ id: String) {
+        #if DEBUG
+        self.accessibilityIdentifier = id
+        #endif
     }
 }
