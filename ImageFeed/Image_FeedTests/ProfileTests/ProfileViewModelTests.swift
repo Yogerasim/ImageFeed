@@ -4,7 +4,7 @@ import XCTest
 final class ProfileViewModelTests: XCTestCase {
 
     func testFetchProfileSuccess() {
-        // given
+        // Given: Mocked profile and image services with expected results
         let avatarURL = URL(string: "https://example.com/avatar.jpg")!
         let profile = Profile(
             username: "test_user",
@@ -29,20 +29,21 @@ final class ProfileViewModelTests: XCTestCase {
         let avatarExpectation = expectation(description: "onAvatarChanged called")
 
         viewModel.onProfileChanged = { loadedProfile in
+            // Then: Profile data matches
             XCTAssertEqual(loadedProfile.name, "Test User")
             XCTAssertEqual(loadedProfile.avatarURL, avatarURL)
             profileExpectation.fulfill()
         }
 
         viewModel.onAvatarChanged = { url in
+            // Then: Avatar URL matches
             XCTAssertEqual(url, avatarURL)
             avatarExpectation.fulfill()
         }
 
-        // when
+        // When: Fetching profile
         viewModel.fetchProfile()
 
-        // then
         wait(for: [profileExpectation, avatarExpectation], timeout: 1.0)
     }
 }

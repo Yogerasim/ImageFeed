@@ -8,9 +8,9 @@ protocol ImagesListCellDelegate: AnyObject {
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
 
-    @IBOutlet private var cellImageView: UIImageView!
-    @IBOutlet private var dateLabel: UILabel!
-    @IBOutlet private var likeButton: UIButton!
+    @IBOutlet private weak var cellImageView: UIImageView!
+    @IBOutlet private weak var dateLabel: UILabel!
+    @IBOutlet private weak var likeButton: UIButton!
 
     weak var delegate: ImagesListCellDelegate?
 

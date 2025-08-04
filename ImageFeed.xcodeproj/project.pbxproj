@@ -85,6 +85,7 @@
 		A76A1D682E06C8BD00153096 /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = "<group>"; };
 		A76CD9DC2E143ECC009807A4 /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		A76CD9DE2E144798009807A4 /* ProfileService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileService.swift; sourceTree = "<group>"; };
+		A77E8BF82E41273700ED0735 /* ImageFeed.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = ImageFeed.xctestplan; sourceTree = "<group>"; };
 		A783FF952E15C4750037CCE8 /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
 		A79176EE2E3385F5002A5EBA /* ProfileLogoutService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileLogoutService.swift; sourceTree = "<group>"; };
 		A79176F22E34F935002A5EBA /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -203,6 +204,7 @@
 		A7260A202DDA1AEE00389349 = {
 			isa = PBXGroup;
 			children = (
+				A77E8BF82E41273700ED0735 /* ImageFeed.xctestplan */,
 				A7260A2B2DDA1AEE00389349 /* ImageFeed */,
 				A79319B82E01B8BE00656DE7 /* Frameworks */,
 				A7260A2A2DDA1AEE00389349 /* Products */,

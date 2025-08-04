@@ -2,8 +2,8 @@ import UIKit
 import Kingfisher
 
 final class SingleImageViewController: UIViewController {
-    @IBOutlet private var scrollView: UIScrollView!
-    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private weak var scrollView: UIScrollView!
+    @IBOutlet private weak var imageView: UIImageView!
 
     var imageURL: URL?
 

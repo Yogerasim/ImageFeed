@@ -9,7 +9,7 @@ protocol ImagesListViewControllerProtocol: AnyObject {
 final class ImagesListViewController: UIViewController {
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
 
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
     public var exposedTableView: UITableView? { tableView }
 
     private lazy var presenter = ImagesListPresenter(
